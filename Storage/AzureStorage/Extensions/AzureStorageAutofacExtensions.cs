@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Builder;
-using Storage.AzureStorage.Model;
+using Core.Model.AzureStorage;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace Storage.AzureStorage.Extensions

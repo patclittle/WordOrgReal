@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 
-namespace Storage.AzureStorage.Model
+namespace Core.Model.AzureStorage
 {
     public class AzureStorageAccount
     {

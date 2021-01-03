@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("define")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -29,9 +29,10 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<WordInformation>> Get()
+        [Route("{word}")]
+        public async Task<IEnumerable<WordInformation>> Get(string word)
         {
-            return await this.client.GetInformation("test");
+            return await this.client.GetInformation(word);
         }
     }
 }

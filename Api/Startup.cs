@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Core;
 using Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OEDClient;
 using Storage.AzureStorage;
+using Storage.AzureStorage.Extensions;
 
 namespace Api
 {
@@ -63,6 +65,7 @@ namespace Api
             builder.RegisterInstance(new HttpClient());
             builder.RegisterSingleInstance<OxfordDictionaryClient>();
             builder.RegisterModule<AzureStorageModule>();
+            builder.RegisterNamedCloudTable(Settings.Storage.MainStorageAccount, Settings.Storage.MainTableName);
         }
         //This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

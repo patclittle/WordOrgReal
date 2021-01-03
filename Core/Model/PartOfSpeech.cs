@@ -8,6 +8,7 @@ namespace Core.Model
         Adjective,
         Adverb,
         Pronoun,
-        Article
+        Article,
+        Interjection
     }
 }

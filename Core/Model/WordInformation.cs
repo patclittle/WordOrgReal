@@ -73,6 +73,8 @@ namespace Core.Model
                     return PartOfSpeech.Article;
                 case "pronoun":
                     return PartOfSpeech.Pronoun;
+                case "interjection":
+                    return PartOfSpeech.Interjection;
                 default:
                     throw new NotImplementedException("Not implemented for " + posString);
             }

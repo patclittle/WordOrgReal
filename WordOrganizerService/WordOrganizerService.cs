@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using Core;
 using Core.Model;
 using Microsoft.Azure.Cosmos.Table;
 using OEDClient;
@@ -14,7 +15,7 @@ namespace WordOrganizerService
         private readonly IOxfordDictionaryClient oedClient;
 
         public WordOrganizerService(
-            [KeyFilter("MainTable")] CloudTable mainTable,
+            [KeyFilter(Settings.Storage.MainTableName)] CloudTable mainTable,
             IOxfordDictionaryClient oedClient)
         {
             this.mainTable = mainTable;
