@@ -6,33 +6,36 @@ using Core.Model;
 using OEDClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WordOrganizerService;
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("define")]
+    [Route("{instanceId:guid}")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IOxfordDictionaryClient client;
+        private readonly IWordOrganizerService wordOrganizer;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
-            IOxfordDictionaryClient client)
+            IWordOrganizerService wordOrganizer)
         {
             _logger = logger;
-            this.client = client;
+            this.wordOrganizer = wordOrganizer;
         }
 
         [HttpGet]
-        [Route("{word}")]
-        public async Task<IEnumerable<WordInformation>> Get(string word)
+        [Route("define/{word}")]
+        public async Task<IEnumerable<WordInformation>> GetAndSaveDefinitionAsync(Guid instanceId, string word)
         {
-            return await this.client.GetInformation(word);
+            return await this.wordOrganizer.GetAndSaveWordInformation(instanceId, word);
+        }
+
+        [HttpGet]
+        [Route("words")]
+        public IEnumerable<string> GetAllWords(Guid instanceId)
+        {
+            return this.wordOrganizer.GetAllWordsForInstance(instanceId);
         }
     }
 }

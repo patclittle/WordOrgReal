@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Model.OEDResponse;
+using Microsoft.Azure.Cosmos.Table;
+using Newtonsoft.Json;
 
 namespace Core.Model
 {
@@ -23,17 +25,44 @@ namespace Core.Model
             this.SemanticClasses = semanticClasses;
         }
 
-        public string WordName { get; }
+        public WordInformation()
+        {
+        }
 
-        public string Definition { get; }
+        public string WordName { get; set; }
 
-        public PartOfSpeech PartOfSpeech { get; }
+        public string Definition { get; set; }
 
-        public IEnumerable<string> Domains { get; }
+        public PartOfSpeech PartOfSpeech { get; set; }
 
-        public IEnumerable<string> Registers { get; }
+        [IgnoreProperty]
+        public IEnumerable<string> Domains { get; set; }
 
-        public IEnumerable<string> SemanticClasses { get; }
+        public string DomainsSerialized { get; set; }
+
+        [IgnoreProperty]
+        public IEnumerable<string> Registers { get; set; }
+
+        public string RegistersSerialized { get; set; }
+
+        [IgnoreProperty]
+        public IEnumerable<string> SemanticClasses { get; set; }
+
+        public string SemanticClassesSerialized { get; set; }
+
+        public void Serialize()
+        {
+            this.DomainsSerialized = this.Domains == null ? "[]" : JsonConvert.SerializeObject(this.Domains);
+            this.RegistersSerialized = this.Registers == null ? "[]" : JsonConvert.SerializeObject(this.Registers);
+            this.SemanticClassesSerialized = this.SemanticClasses == null ? "[]" : JsonConvert.SerializeObject(this.SemanticClasses);
+        }
+
+        public void Deserialize()
+        {
+            this.Domains = JsonConvert.DeserializeObject<IEnumerable<string>>(this.DomainsSerialized);
+            this.Registers = JsonConvert.DeserializeObject<IEnumerable<string>>(this.RegistersSerialized);
+            this.SemanticClasses = JsonConvert.DeserializeObject<IEnumerable<string>>(this.SemanticClassesSerialized);
+        }
 
         public static IEnumerable<WordInformation> FromOedResponse(OEDWordResponse oedResponse)
         {

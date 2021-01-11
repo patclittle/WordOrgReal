@@ -11,5 +11,9 @@
   <ItemGroup>
     <ProjectReference Include="..\OEDClient\OEDClient.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Storage\Storage.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

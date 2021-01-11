@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using OEDClient;
 using Storage.AzureStorage;
 using Storage.AzureStorage.Extensions;
+using WordOrganizerService;
 
 namespace Api
 {
@@ -62,10 +63,8 @@ namespace Api
             // call builder.Populate(), that happens in AutofacServiceProviderFactory
             // for you.
 
-            builder.RegisterInstance(new HttpClient());
-            builder.RegisterSingleInstance<OxfordDictionaryClient>();
+            builder.RegisterModule<WordOrganizerServiceModule>();
             builder.RegisterModule<AzureStorageModule>();
-            builder.RegisterNamedCloudTable(Settings.Storage.MainStorageAccount, Settings.Storage.MainTableName);
         }
         //This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
