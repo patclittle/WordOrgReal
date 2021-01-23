@@ -27,7 +27,7 @@ namespace WordOrganizerService
             this.oedClient = oedClient;
         }
 
-        public IEnumerable<string> GetAllWordsForInstance(Guid instanceId)
+        public IEnumerable<WordReference> GetAllWordsForInstance(Guid instanceId)
         {
             return this.GetAllWordsFromReferenceTable(instanceId);
         }
@@ -42,7 +42,7 @@ namespace WordOrganizerService
             else
             {
                 var wordInfo = await oedClient.GetInformation(word);
-                await this.AddWordToReferenceTableAsync(instanceId, word);
+                await this.AddWordToReferenceTableAsync(instanceId, word, wordInfo);
                 foreach (var info in wordInfo)
                 {
                     await this.AddDefinitionToTableAsync(instanceId, info);
@@ -66,13 +66,15 @@ namespace WordOrganizerService
             await definitionsTable.ExecuteAsync(TableOperation.Insert(tableEntity));
         }
 
-        private async Task AddWordToReferenceTableAsync(Guid instanceId, string word)
+        private async Task AddWordToReferenceTableAsync(Guid instanceId, string wordName, IEnumerable<WordInformation> wordInfo)
         {
+            var wordRef = new WordReference(wordName, wordInfo);
+            wordRef.Serialize();
             var tableEntity = new TableEntityAdapter<WordReference>()
             {
                 PartitionKey = instanceId.ToString(),
-                RowKey = word,
-                OriginalEntity = new WordReference(word),
+                RowKey = wordName,
+                OriginalEntity = wordRef,
             };
 
             await this.wordReferencesTable.ExecuteAsync(TableOperation.Insert(tableEntity));
@@ -83,20 +85,20 @@ namespace WordOrganizerService
             var query = new TableQuery<TableEntityAdapter<WordInformation>>()
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", "eq", $"{instanceId}_{word}"));
             var res = this.definitionsTable.ExecuteQuery(query);
-            var infos = res.Select(r => r.OriginalEntity);
+            var infos = res.Select(r => r.OriginalEntity).ToList();
             foreach (var info in infos)
             {
-                info.Deserialize();//seems not to be working
+                info.Deserialize();
             }
             return infos;
         }
 
-        private IEnumerable<string> GetAllWordsFromReferenceTable(Guid instanceId)
+        private IEnumerable<WordReference> GetAllWordsFromReferenceTable(Guid instanceId)
         {
             var query = new TableQuery<TableEntityAdapter<WordReference>>()
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", "eq", $"{instanceId}"));
             var res = this.wordReferencesTable.ExecuteQuery(query);
-            return res.Select(r => r.OriginalEntity.WordName);
+            return res.Select(r => r.OriginalEntity);
         }
     }
 }

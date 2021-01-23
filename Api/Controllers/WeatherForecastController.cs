@@ -7,6 +7,7 @@ using OEDClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WordOrganizerService;
+using WordOrganizerService.Model;
 
 namespace Api.Controllers
 {
@@ -33,7 +34,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Route("words")]
-        public IEnumerable<string> GetAllWords(Guid instanceId)
+        public IEnumerable<WordReference> GetAllWords(Guid instanceId)
         {
             return this.wordOrganizer.GetAllWordsForInstance(instanceId);
         }

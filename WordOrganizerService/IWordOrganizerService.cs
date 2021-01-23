@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Model;
+using WordOrganizerService.Model;
 
 namespace WordOrganizerService
 {
@@ -9,6 +10,6 @@ namespace WordOrganizerService
     {
         Task<IEnumerable<WordInformation>> GetAndSaveWordInformation(Guid instanceId, string word);
 
-        IEnumerable<string> GetAllWordsForInstance(Guid instanceId);
+        IEnumerable<WordReference> GetAllWordsForInstance(Guid instanceId);
     }
 }

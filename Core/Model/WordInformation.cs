@@ -4,6 +4,7 @@ using System.Linq;
 using Core.Model.OEDResponse;
 using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Core.Model
 {
@@ -13,9 +14,9 @@ namespace Core.Model
             string wordName,
             string definition,
             PartOfSpeech partOfSpeech,
-            IEnumerable<string> domains,
-            IEnumerable<string> registers,
-            IEnumerable<string> semanticClasses)
+            List<string> domains,
+            List<string> registers,
+            List<string> semanticClasses)
         {
             this.WordName = wordName;
             this.Definition = definition;
@@ -33,21 +34,25 @@ namespace Core.Model
 
         public string Definition { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public PartOfSpeech PartOfSpeech { get; set; }
 
         [IgnoreProperty]
-        public IEnumerable<string> Domains { get; set; }
+        public List<string> Domains { get; set; }
 
+        [HideFromApi]
         public string DomainsSerialized { get; set; }
 
         [IgnoreProperty]
-        public IEnumerable<string> Registers { get; set; }
+        public List<string> Registers { get; set; }
 
+        [HideFromApi]
         public string RegistersSerialized { get; set; }
 
         [IgnoreProperty]
-        public IEnumerable<string> SemanticClasses { get; set; }
+        public List<string> SemanticClasses { get; set; }
 
+        [HideFromApi]
         public string SemanticClassesSerialized { get; set; }
 
         public void Serialize()
@@ -59,9 +64,9 @@ namespace Core.Model
 
         public void Deserialize()
         {
-            this.Domains = JsonConvert.DeserializeObject<IEnumerable<string>>(this.DomainsSerialized);
-            this.Registers = JsonConvert.DeserializeObject<IEnumerable<string>>(this.RegistersSerialized);
-            this.SemanticClasses = JsonConvert.DeserializeObject<IEnumerable<string>>(this.SemanticClassesSerialized);
+            this.Domains = JsonConvert.DeserializeObject<List<string>>(this.DomainsSerialized);
+            this.Registers = JsonConvert.DeserializeObject<List<string>>(this.RegistersSerialized);
+            this.SemanticClasses = JsonConvert.DeserializeObject<List<string>>(this.SemanticClassesSerialized);
         }
 
         public static IEnumerable<WordInformation> FromOedResponse(OEDWordResponse oedResponse)
@@ -78,9 +83,9 @@ namespace Core.Model
                         wordName,
                         sense.Definitions.First(),
                         partOfSpeech,
-                        sense.DomainClasses?.Select(d => d.Id) ?? new List<string>(),
-                        sense.Registers?.Select(d => d.Id) ?? new List<string>(),
-                        sense.SemanticClasses?.Select(d => d.Id) ?? new List<string>());
+                        sense.DomainClasses?.Select(d => d.Id).ToList() ?? new List<string>(),
+                        sense.Registers?.Select(d => d.Id).ToList() ?? new List<string>(),
+                        sense.SemanticClasses?.Select(d => d.Id).ToList() ?? new List<string>());
                     }
                 }
             }
